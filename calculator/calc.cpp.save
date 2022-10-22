@@ -1,0 +1,94 @@
+#include <iostream>
+#include <cstdlib> // для функций strtol, exit
+#include <unistd.h> // для функции getopt
+// реализация интерфейса в виде класса
+class Opts {
+private:
+ // константы с пределами значений
+ static constexpr int minLen = 8;
+ static constexpr int maxLen = 40;
+ static constexpr int minNum = 1;
+ static constexpr int maxNum = 20;
+ // атрибуты
+ int passLen = minLen; // длина пароля
+ int passNum = minNum; // количество паролей
+ bool useNums = false; // использовавание цифр
+ bool useAlpha = false; // использование букв
+ bool useSign = false; // использование знаков
+ void usage(const char* progName); //вывод подсказки и останов
+public:
+ Opts(int argc, char **argv); // конструктор
+ // "геттеры" с результатами разбора параметров
+ int getLen() {return passLen;} //длина пароля
+ int getNum() {return passNum;} //кол-во паролей
+ bool isNums() {return useNums;} // исп. цифр
+ bool isAlpha() {return useAlpha;} // исп. букв
+ bool isSign() {return useSign;} // исп. знаков
+};
+int main(int argc, char **argv)
+{
+ Opts op(argc, argv); // реализуем разбор ПКС
+ // получаем результат разбора ПКС
+std::cout<<op.getLen()<<std::endl;
+std::cout<<op.getNum()<<std::endl;
+ std::cout<<std::boolalpha;
+std::cout<<op.isNums()<<std::endl;
+std::cout<<op.isAlpha()<<std::endl;
+std::cout<<op.isSign()<<std::endl;
+ // TODO здесь будет сам генератор паролей
+return 0;
+}
+// реализация конструктора - весь разбор ПКС здесь
+Opts::Opts(int argc, char **argv)
+{
+ int opt;
+ while ((opt = getopt(argc, argv, "l:n:0ash")) != -1) {
+ switch (opt) {
+ case 'l': // длина пароля
+ passLen = strtol(optarg,nullptr,10);
+ if (passLen < minLen || passLen > maxLen) {
+ // если ошибка - сообщить и завершить
+ std::cerr<<"passLen must be from 8 to 40\n";
+ usage(argv[0]);
+ }
+ break;
+ case 'n': // кол-во паролей
+ passNum = strtol(optarg,nullptr,10);
+ if (passNum < minNum || passNum > maxNum) {
+ // если ошибка - сообщить и завершить
+6
+ std::cerr<<"passNum must be from 1 to 20\n";
+ usage(argv[0]);
+ }
+ break;
+ case '0': // исп. цифры
+ useNums = true;
+ break;
+ case 'a': // исп. буквы
+ useAlpha = true;
+ break;
+ case 's': // исп. знаки
+ useSign = true;
+ break;
+ case 'h': // -h help
+ case '?': // неверный параметр
+ case ':': // нет значения у параметра
+ usage(argv[0]); // сообщить и завершить
+ }
+ }
+ // если не установлено ничего из алфавита - установить все
+ if (!useNums && !useAlpha && !useSign) {
+ useAlpha = useNums = useSign = true;
+ }
+}
+// краткая справки и досрочное завершение программы
+void Opts::usage(const char* progName)
+{
+ std::cout<<"Usage: "<<progName<<" [-l pass_len] [-n pass_num] [-0] [-a] [-
+s]\n";
+ exit(1);
+} #include <iostream>
+int main() {
+std::cout << "hello world\n";
+return 0;
+}
