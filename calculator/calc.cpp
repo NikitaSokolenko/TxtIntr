@@ -66,6 +66,7 @@ Opts::Opts(int argc, char **argv)
     }
  }
  if (Params<minPar){
+ cout <<"Недостаточно операндов" <<endl;
  usage(argv[0]);}
 }
 // краткая справки и досрочное завершение программы
